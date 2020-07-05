@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  url: 'https://',
+  urlBase: "http://localhost:3000/"
 };

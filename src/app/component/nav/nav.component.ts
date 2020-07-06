@@ -22,6 +22,8 @@ export class NavComponent implements OnInit {
     if (event !== '' && isNaN(Number(event))) {
       if (event.length > Number('2')) {
         this.getProducts(event);
+      } else {
+        return;
       }
     } else {
       this.getProducts(event);
@@ -40,6 +42,7 @@ export class NavComponent implements OnInit {
         }
       }, (err) => {
         this.resultado = false;
+        this.eventRespuesta.emit(null);
         console.log(err.message);
       });
   }

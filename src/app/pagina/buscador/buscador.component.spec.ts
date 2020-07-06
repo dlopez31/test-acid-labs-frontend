@@ -1,25 +1,36 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BuscadorComponent } from './buscador.component';
+import { Respuesta } from '../../interfaces/interfaces';
 
-describe('BuscadorComponent', () => {
-  let component: BuscadorComponent;
-  let fixture: ComponentFixture<BuscadorComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ BuscadorComponent ]
-    })
-    .compileComponents();
-  }));
+describe('Pruebas BuscadorComponent', () => {
+  let componente: BuscadorComponent;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BuscadorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    componente = new BuscadorComponent();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('Cuando el valor del evento sea null', () => {
+    componente.listarProducto(null);
+    expect(componente.respuesta).toEqual(null);
+    expect(componente.products).toEqual([]);
+  });
+
+  it('Cuando el valor del evento sea tien los datos', () => {
+    const respuesta: Respuesta = {
+      ok: true,
+      pagina: 1,
+      products: [
+        {
+          id: 1,
+          brand: "ooy eqrceli",
+          description: "rlñlw brhrka",
+          image: "www.lider.cl/catalogo/images/whiteLineIcon.svg",
+          price: 249362
+        }
+      ],
+      palindomo: true
+    };
+    componente.listarProducto(respuesta);
+    expect(componente.respuesta).toEqual(respuesta);
+    expect(componente.products.length).toBeGreaterThan(0);
   });
 });

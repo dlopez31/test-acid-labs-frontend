@@ -1,35 +1,61 @@
-import { TestBed, async } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { Location } from "@angular/common";
+import { By } from '@angular/platform-browser';
+import { TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from "@angular/router/testing";
+import { Router, Routes, RouterOutlet } from "@angular/router";
+import { HttpClientModule } from '@angular/common/http';
+import { BuscadorComponent } from './pagina/buscador/buscador.component';
 import { AppComponent } from './app.component';
+import { NavComponent } from './component/nav/nav.component';
+import { AvisoComponent } from './component/aviso/aviso.component';
+import { BuscarProductsService } from './sevices/buscar-products.service';
 
-describe('AppComponent', () => {
-  beforeEach(async(() => {
+describe('Puebas Router:app', () => {
+  let location: Location;
+  let router: Router;
+  let fixture;
+
+  const routes: Routes = [
+    { path: 'buscador', component: BuscadorComponent },
+    {
+      path: '**',
+      redirectTo: 'buscador'
+    }
+  ];
+
+
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
+      imports: [HttpClientModule, RouterTestingModule.withRoutes(routes)],
       declarations: [
-        AppComponent
-      ],
-    }).compileComponents();
-  }));
+        BuscadorComponent,
+        AppComponent,
+        NavComponent,
+        AvisoComponent
+      ], providers: [BuscarProductsService]
+    });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
+    router = TestBed.get(Router);
+    location = TestBed.get(Location);
 
-  it(`should have as title 'test-tecnico'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('test-tecnico');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('test-tecnico app is running!');
+    fixture.ngZone.run(() => {
+      router.initialNavigation();
+    });
+
   });
+
+  it('Navega a buscador', async () => {
+    const success = await fixture.ngZone.run(() => router.navigateByUrl('buscador'));
+    expect(success).toBeTruthy();
+    expect(location.path()).toBe('/buscador');
+  });
+
+  it('Debe de tener un router-outlet', async () => {
+    const debugElement = fixture.debugElement.query(By.directive(RouterOutlet));
+    expect(debugElement).not.toBeNull();
+  });
+
+
 });
